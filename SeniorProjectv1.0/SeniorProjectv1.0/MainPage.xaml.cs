@@ -100,15 +100,6 @@ namespace SeniorProjectv1._0
             txtDebug.Text = "Database button clicked.";
 
             // Create the database if it does not yet exist.
-            using (MoneyContext db = new MoneyContext("isostore:/ToDo.sdf"))
-            {
-                if (db.DatabaseExists() == false)
-                {
-                    // Create the database.
-                    db.CreateDatabase();
-                    txtDebug.Text = "Database has been created.";
-                }
-            }
         }
 
         // Provide autofocus in the viewfinder.
@@ -224,9 +215,6 @@ namespace SeniorProjectv1._0
         {
             string fileName = savedCounter + ".jpg";
 
-            MoneyItem newMoney = new MoneyItem();
-            mon
-
             try
             {   // Write message to the UI thread.
                 Deployment.Current.Dispatcher.BeginInvoke(delegate()
@@ -318,49 +306,6 @@ namespace SeniorProjectv1._0
             {
                 // Close image stream
                 e.ImageStream.Close();
-            }
-        }
-
-        /************************************************************************
-         * 
-         * DATABASE CODE
-         * 
-         * 
-         * 
-         * 
-         * *********************************************************************/
-        public class MoneyContext : DataContext
-        {
-            // Specify the connection string as a static, used in main page and app.xaml.
-            public static string DBConnection = "Data Source=isostore:/Money.sdf";
-
-            // Pass the connection string to the base class
-            public MoneyContext(string connectionString) : base(connectionString) { }
-
-            // Specify a single table for the money items
-            public Table<MoneyItem> Money;
-        }
-
-        [Table]
-        public class MoneyItem
-        {
-            // Define ID: private field, public property, and database column
-            private int _moneyPictureId;
-
-            [Column(IsPrimaryKey = true, IsDbGenerated = true, DbType = "INT NOT NULL Identity", CanBeNull = false, AutoSync = AutoSync.OnInsert)]
-            public int MoneyPictureId
-            {
-                get
-                {
-                    return _moneyPictureId;
-                }
-                set
-                {
-                    if (_moneyPictureId != value)
-                    {
-                        _moneyPictureId = value;
-                    }
-                }
             }
         }
     }
