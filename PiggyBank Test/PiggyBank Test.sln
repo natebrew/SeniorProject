@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiggyBank 1", "PiggyBank 1\PiggyBank 1.csproj", "{D62F915F-B089-4418-B406-BE0372183804}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiggyBankPhoto", "PiggyBank 1\PiggyBankPhoto.csproj", "{D62F915F-B089-4418-B406-BE0372183804}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
