@@ -204,13 +204,15 @@ namespace PiggyBank_1
 
         private void Camera_Click(object sender, RoutedEventArgs e)
         {
-            var messagePrompt = new MessagePrompt
-            {
-                Title = "Simple Message",
-                Message = "This is just to show you that clicking this button can do something :) Have a nice Day!"
-            };
+            //var messagePrompt = new MessagePrompt
+            //{
+            //    Title = "Simple Message",
+            //    Message = "This is just to show you that clicking this button can do something :) Have a nice Day!"
+            //};
             
-            messagePrompt.Show();
+            //messagePrompt.Show();
+
+            NavigationService.Navigate(new Uri("/CameraPage.xaml", UriKind.RelativeOrAbsolute));
 
         }
 
