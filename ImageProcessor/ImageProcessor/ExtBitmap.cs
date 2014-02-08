@@ -1,44 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Windows.Forms;
-using System.Reflection;
- 
-using AForge;
-using AForge.Imaging;
-using AForge.Imaging.Filters;
-using AForge.Math.Geometry;
+using System.Linq;
 using System.Runtime.InteropServices;
-
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ImageProcessor
 {
-    class PictureModificator
+    public static class ExtBitmap
     {
-        private Bitmap currentImage;
- 
-        public PictureModificator(Bitmap currentImage)
+        public static Bitmap CopyToSquareCanvas(this Bitmap sourceBitmap, int canvasWidthLenght)
         {
-            this.currentImage = currentImage;
-        }
- 
-        public PictureModificator()
-        {
-            this.currentImage = null;
+            float ratio = 1.0f;
+            int maxSide = sourceBitmap.Width > sourceBitmap.Height ?
+                          sourceBitmap.Width : sourceBitmap.Height;
+
+            ratio = (float)maxSide / (float)canvasWidthLenght;
+
+            Bitmap bitmapResult = (sourceBitmap.Width > sourceBitmap.Height ?
+                                    new Bitmap(canvasWidthLenght, (int)(sourceBitmap.Height / ratio))
+                                    : new Bitmap((int)(sourceBitmap.Width / ratio), canvasWidthLenght));
+
+            using (Graphics graphicsResult = Graphics.FromImage(bitmapResult))
+            {
+                graphicsResult.CompositingQuality = CompositingQuality.HighQuality;
+                graphicsResult.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphicsResult.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                graphicsResult.DrawImage(sourceBitmap,
+                                        new Rectangle(0, 0,
+                                            bitmapResult.Width, bitmapResult.Height),
+                                        new Rectangle(0, 0,
+                                            sourceBitmap.Width, sourceBitmap.Height),
+                                            GraphicsUnit.Pixel);
+                graphicsResult.Flush();
+            }
+
+            return bitmapResult;
         }
 
-
-        // added this for the filtering
-        public Bitmap ConvolutionFilter(
+        private static Bitmap ConvolutionFilter(Bitmap sourceBitmap,
                                              double[,] filterMatrix,
                                                   double factor = 1,
                                                        int bias = 0,
                                              bool grayscale = false)
         {
-            BitmapData sourceData = currentImage.LockBits(new Rectangle(0, 0,
-                                     currentImage.Width, currentImage.Height),
+            BitmapData sourceData = sourceBitmap.LockBits(new Rectangle(0, 0,
+                                     sourceBitmap.Width, sourceBitmap.Height),
                                                        ImageLockMode.ReadOnly,
                                                  PixelFormat.Format32bppArgb);
 
@@ -46,7 +57,7 @@ namespace ImageProcessor
             byte[] resultBuffer = new byte[sourceData.Stride * sourceData.Height];
 
             Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
-            currentImage.UnlockBits(sourceData);
+            sourceBitmap.UnlockBits(sourceData);
 
             if (grayscale == true)
             {
@@ -79,10 +90,10 @@ namespace ImageProcessor
             int byteOffset = 0;
 
             for (int offsetY = filterOffset; offsetY <
-                currentImage.Height - filterOffset; offsetY++)
+                sourceBitmap.Height - filterOffset; offsetY++)
             {
                 for (int offsetX = filterOffset; offsetX <
-                    currentImage.Width - filterOffset; offsetX++)
+                    sourceBitmap.Width - filterOffset; offsetX++)
                 {
                     blue = 0;
                     green = 0;
@@ -143,7 +154,7 @@ namespace ImageProcessor
                 }
             }
 
-            Bitmap resultBitmap = new Bitmap(currentImage.Width, currentImage.Height);
+            Bitmap resultBitmap = new Bitmap(sourceBitmap.Width, sourceBitmap.Height);
 
             BitmapData resultData = resultBitmap.LockBits(new Rectangle(0, 0,
                                      resultBitmap.Width, resultBitmap.Height),
@@ -156,15 +167,15 @@ namespace ImageProcessor
             return resultBitmap;
         }
 
-        public Bitmap ConvolutionFilter(
+        public static Bitmap ConvolutionFilter(this Bitmap sourceBitmap,
                                                 double[,] xFilterMatrix,
                                                 double[,] yFilterMatrix,
                                                       double factor = 1,
                                                            int bias = 0,
                                                  bool grayscale = false)
         {
-            BitmapData sourceData = currentImage.LockBits(new Rectangle(0, 0,
-                                     currentImage.Width, currentImage.Height),
+            BitmapData sourceData = sourceBitmap.LockBits(new Rectangle(0, 0,
+                                     sourceBitmap.Width, sourceBitmap.Height),
                                                        ImageLockMode.ReadOnly,
                                                   PixelFormat.Format32bppArgb);
 
@@ -172,7 +183,7 @@ namespace ImageProcessor
             byte[] resultBuffer = new byte[sourceData.Stride * sourceData.Height];
 
             Marshal.Copy(sourceData.Scan0, pixelBuffer, 0, pixelBuffer.Length);
-            currentImage.UnlockBits(sourceData);
+            sourceBitmap.UnlockBits(sourceData);
 
             if (grayscale == true)
             {
@@ -209,10 +220,10 @@ namespace ImageProcessor
             int byteOffset = 0;
 
             for (int offsetY = filterOffset; offsetY <
-                currentImage.Height - filterOffset; offsetY++)
+                sourceBitmap.Height - filterOffset; offsetY++)
             {
                 for (int offsetX = filterOffset; offsetX <
-                    currentImage.Width - filterOffset; offsetX++)
+                    sourceBitmap.Width - filterOffset; offsetX++)
                 {
                     blueX = greenX = redX = 0;
                     blueY = greenY = redY = 0;
@@ -285,7 +296,7 @@ namespace ImageProcessor
                 }
             }
 
-            Bitmap resultBitmap = new Bitmap(currentImage.Width, currentImage.Height);
+            Bitmap resultBitmap = new Bitmap(sourceBitmap.Width, sourceBitmap.Height);
 
             BitmapData resultData = resultBitmap.LockBits(new Rectangle(0, 0,
                                      resultBitmap.Width, resultBitmap.Height),
@@ -298,238 +309,130 @@ namespace ImageProcessor
             return resultBitmap;
         }
 
-        public void Laplacian3x3Filter(bool grayscale = true)
+        public static Bitmap Laplacian3x3Filter(this Bitmap sourceBitmap,
+                                                    bool grayscale = true)
         {
-            currentImage = ConvolutionFilter(Matrix.Laplacian3x3, 1.0, 0, grayscale);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                    Matrix.Laplacian3x3, 1.0, 0, grayscale);
+
+            return resultBitmap;
         }
 
-        public void Laplacian5x5Filter(bool grayscale = true)
+        public static Bitmap Laplacian5x5Filter(this Bitmap sourceBitmap,
+                                                    bool grayscale = true)
         {
-            currentImage = ConvolutionFilter(Matrix.Laplacian5x5, 1.0, 0, grayscale);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                    Matrix.Laplacian5x5, 1.0, 0, grayscale);
+
+            return resultBitmap;
         }
 
-        public void LaplacianOfGaussianFilter()
+        public static Bitmap LaplacianOfGaussianFilter(this Bitmap sourceBitmap)
         {
-            currentImage = ConvolutionFilter(Matrix.LaplacianOfGaussian, 1.0, 0, true);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                  Matrix.LaplacianOfGaussian, 1.0, 0, true);
+
+            return resultBitmap;
         }
 
-        public void Laplacian3x3OfGaussian3x3Filter()
+        public static Bitmap Laplacian3x3OfGaussian3x3Filter(this Bitmap sourceBitmap)
         {
-            currentImage = ConvolutionFilter(Matrix.Gaussian3x3, 1.0 / 16.0, 0, true);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                   Matrix.Gaussian3x3, 1.0 / 16.0, 0, true);
 
-            currentImage = ConvolutionFilter(Matrix.Laplacian3x3, 1.0, 0, false);
+            resultBitmap = ExtBitmap.ConvolutionFilter(resultBitmap,
+                                 Matrix.Laplacian3x3, 1.0, 0, false);
+
+            return resultBitmap;
         }
 
-        public void Laplacian3x3OfGaussian5x5Filter1()
+        public static Bitmap Laplacian3x3OfGaussian5x5Filter1(this Bitmap sourceBitmap)
         {
-            currentImage = ConvolutionFilter(Matrix.Gaussian5x5Type1, 1.0 / 159.0, 0, true);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                             Matrix.Gaussian5x5Type1, 1.0 / 159.0, 0, true);
 
-            currentImage = ConvolutionFilter(Matrix.Laplacian3x3, 1.0, 0, false);
+            resultBitmap = ExtBitmap.ConvolutionFilter(resultBitmap,
+                                 Matrix.Laplacian3x3, 1.0, 0, false);
+
+            return resultBitmap;
         }
 
-        public void Laplacian3x3OfGaussian5x5Filter2()
+        public static Bitmap Laplacian3x3OfGaussian5x5Filter2(this Bitmap sourceBitmap)
         {
-            currentImage = ConvolutionFilter(Matrix.Gaussian5x5Type2, 1.0 / 256.0, 0, true);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                             Matrix.Gaussian5x5Type2, 1.0 / 256.0, 0, true);
 
-            currentImage = ConvolutionFilter( Matrix.Laplacian3x3, 1.0, 0, false);
+            resultBitmap = ExtBitmap.ConvolutionFilter(resultBitmap,
+                                 Matrix.Laplacian3x3, 1.0, 0, false);
+
+            return resultBitmap;
         }
 
-        public void Laplacian5x5OfGaussian3x3Filter()
+        public static Bitmap Laplacian5x5OfGaussian3x3Filter(this Bitmap sourceBitmap)
         {
-            currentImage = ConvolutionFilter(Matrix.Gaussian3x3, 1.0 / 16.0, 0, true);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                   Matrix.Gaussian3x3, 1.0 / 16.0, 0, true);
 
-            currentImage = ConvolutionFilter(Matrix.Laplacian5x5, 1.0, 0, false);
+            resultBitmap = ExtBitmap.ConvolutionFilter(resultBitmap,
+                                 Matrix.Laplacian5x5, 1.0, 0, false);
+
+            return resultBitmap;
         }
 
-        public void Laplacian5x5OfGaussian5x5Filter1()
+        public static Bitmap Laplacian5x5OfGaussian5x5Filter1(this Bitmap sourceBitmap)
         {
-            currentImage = ConvolutionFilter(Matrix.Gaussian5x5Type1, 1.0 / 159.0, 0, true);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                             Matrix.Gaussian5x5Type1, 1.0 / 159.0, 0, true);
 
-            currentImage = ConvolutionFilter(Matrix.Laplacian5x5, 1.0, 0, false);
+            resultBitmap = ExtBitmap.ConvolutionFilter(resultBitmap,
+                                 Matrix.Laplacian5x5, 1.0, 0, false);
+
+            return resultBitmap;
         }
 
-        public void Laplacian5x5OfGaussian5x5Filter2()
+        public static Bitmap Laplacian5x5OfGaussian5x5Filter2(this Bitmap sourceBitmap)
         {
-            currentImage = ConvolutionFilter(Matrix.Gaussian5x5Type2, 1.0 / 256.0, 0, true);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                                   Matrix.Gaussian5x5Type2,
+                                                     1.0 / 256.0, 0, true);
 
-            currentImage = ConvolutionFilter(Matrix.Laplacian5x5, 1.0, 0, false);
-        }
+            resultBitmap = ExtBitmap.ConvolutionFilter(resultBitmap,
+                                 Matrix.Laplacian5x5, 1.0, 0, false);
 
-        public void Sobel3x3Filter(bool grayscale = true)
-        {
-            currentImage = ConvolutionFilter(Matrix.Sobel3x3Horizontal, Matrix.Sobel3x3Vertical, 1.0, 0, grayscale);
-
-        }
-
-        public void PrewittFilter(bool grayscale = true)
-        {
-            currentImage = ConvolutionFilter(Matrix.Prewitt3x3Horizontal, Matrix.Prewitt3x3Vertical, 1.0, 0, grayscale);
+            return resultBitmap;
         }
 
-        public void KirschFilter(bool grayscale = true)
+        public static Bitmap Sobel3x3Filter(this Bitmap sourceBitmap,
+                                                bool grayscale = true)
         {
-            currentImage = ConvolutionFilter(Matrix.Kirsch3x3Horizontal, Matrix.Kirsch3x3Vertical, 1.0, 0, grayscale);
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                                 Matrix.Sobel3x3Horizontal,
+                                                   Matrix.Sobel3x3Vertical,
+                                                        1.0, 0, grayscale);
+
+            return resultBitmap;
         }
 
+        public static Bitmap PrewittFilter(this Bitmap sourceBitmap,
+                                               bool grayscale = true)
+        {
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                               Matrix.Prewitt3x3Horizontal,
+                                                 Matrix.Prewitt3x3Vertical,
+                                                        1.0, 0, grayscale);
 
+            return resultBitmap;
+        }
 
-        
-        //
-        // this is just too easy...
-        //
-        public bool applySobelEdgeFilter()
+        public static Bitmap KirschFilter(this Bitmap sourceBitmap,
+                                              bool grayscale = true)
         {
-            if (currentImage != null)
-            {
-                try
-                {
-                    // create filter
-                    SobelEdgeDetector filter = new SobelEdgeDetector();
-                    // apply the filter
-                    filter.ApplyInPlace(currentImage);
-                    return true;
-                }
-                catch (Exception e)
-                {
- 
-                }
-            }
-            return false;
-        }
- 
-        public bool applyGrayscale()
-        {
-            if (currentImage != null)
-            {
-                try
-                {
-                    // create grayscale filter (BT709)
-                    Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
-                    // apply the filter
-                    currentImage = filter.Apply(currentImage);
-                    return true;
-                }
-                catch (Exception e)
-                { }
-            }
-            return false;
-        }
- 
-        public bool markKnownForms()
-        {
-            if (currentImage != null)
-            {
-                try
-                {
-                    Bitmap image = new Bitmap(this.currentImage);
-                    // lock image
-                    BitmapData bmData = image.LockBits(
-                        new Rectangle(0, 0, image.Width, image.Height),
-                        ImageLockMode.ReadWrite, image.PixelFormat);
- 
-                    // turn background to black
-                    ColorFiltering cFilter = new ColorFiltering();
-                    cFilter.Red = new IntRange(0, 64);
-                    cFilter.Green = new IntRange(0, 64);
-                    cFilter.Blue = new IntRange(0, 64);
-                    cFilter.FillOutsideRange = false;
-                    cFilter.ApplyInPlace(bmData);
-                    
- 
-                    // locate objects
-                    BlobCounter bCounter = new BlobCounter();
- 
-                    bCounter.FilterBlobs = true;
-                    bCounter.MinHeight = 30;
-                    bCounter.MinWidth = 30;
- 
-                    bCounter.ProcessImage(bmData);
-                    Blob[] baBlobs = bCounter.GetObjectsInformation();
-                    image.UnlockBits(bmData);
- 
-                    // coloring objects
-                    SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
- 
-                    Graphics g = Graphics.FromImage(image);
-                    Pen yellowPen = new Pen(Color.Yellow, 2); // circles
-                    Pen redPen = new Pen(Color.Red, 2);       // quadrilateral
-                    Pen brownPen = new Pen(Color.Brown, 2);   // quadrilateral with known sub-type
-                    Pen greenPen = new Pen(Color.Green, 2);   // known triangle
-                    Pen bluePen = new Pen(Color.Blue, 2);     // triangle
- 
-                    for (int i = 0, n = baBlobs.Length; i < n; i++)
-                    {
-                        List<IntPoint> edgePoints = bCounter.GetBlobsEdgePoints(baBlobs[i]);
- 
-                        AForge.Point center;
-                        float radius;
- 
-                        // is circle ?
-                        if (shapeChecker.IsCircle(edgePoints, out center, out radius))
-                        {
-                            g.DrawEllipse(yellowPen,
-                                (float)(center.X - radius), (float)(center.Y - radius),
-                                (float)(radius * 2), (float)(radius * 2));
-                        }
-                        else
-                        {
-                            List<IntPoint> corners;
- 
-                            // is triangle or quadrilateral
-                            if (shapeChecker.IsConvexPolygon(edgePoints, out corners))
-                            {
-                                PolygonSubType subType = shapeChecker.CheckPolygonSubType(corners);
-                                Pen pen;
-                                if (subType == PolygonSubType.Unknown)
-                                {
-                                    pen = (corners.Count == 4) ? redPen : bluePen;
-                                }
-                                else
-                                {
-                                    pen = (corners.Count == 4) ? brownPen : greenPen;
-                                }
- 
-                                g.DrawPolygon(pen, ToPointsArray(corners));
-                            }
-                        }
-                    }
-                    yellowPen.Dispose();
-                    redPen.Dispose();
-                    greenPen.Dispose();
-                    bluePen.Dispose();
-                    brownPen.Dispose();
-                    g.Dispose();
-                    this.currentImage = image;
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    
-                }
-            }
-            return false;
-        }
- 
-        private System.Drawing.Point[] ToPointsArray(List<IntPoint> points)
-        {
-            System.Drawing.Point[] array = new System.Drawing.Point[points.Count];
- 
-            for (int i = 0, n = points.Count; i < n; i++)
-            {
-                array[i] = new System.Drawing.Point(points[i].X, points[i].Y);
-            }
- 
-            return array;
-        }
- 
-        public void setCurrentImage(Bitmap currentImage)
-        {
-            this.currentImage = currentImage;
-        }
- 
-        public Bitmap getCurrentImage()
-        {
-            return currentImage;
+            Bitmap resultBitmap = ExtBitmap.ConvolutionFilter(sourceBitmap,
+                                                Matrix.Kirsch3x3Horizontal,
+                                                  Matrix.Kirsch3x3Vertical,
+                                                        1.0, 0, grayscale);
+
+            return resultBitmap;
         }
     }
 }

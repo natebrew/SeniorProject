@@ -88,7 +88,13 @@ namespace ImageProcessor
             {
                 myPicAnalyzer.setCurrentImage(bitmap);
                 myPicAnalyzer.applyGrayscale();
-                myPicAnalyzer.applySobelEdgeFilter();
+                //myPicAnalyzer.applySobelEdgeFilter();
+                //myPicAnalyzer.Laplacian3x3Filter();
+                //myPicAnalyzer.Laplacian5x5Filter();
+                //myPicAnalyzer.Laplacian3x3OfGaussian5x5Filter2();
+                //myPicAnalyzer.KirschFilter();
+                myPicAnalyzer.PrewittFilter();
+                //myPicAnalyzer.Laplacian5x5OfGaussian5x5Filter2();
                 myPicAnalyzer.markKnownForms();
                 pictureBox1.Image = myPicAnalyzer.getCurrentImage();
             }
