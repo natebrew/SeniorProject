@@ -1,4 +1,8 @@
-﻿using System;
+﻿using AForge;
+using AForge.Imaging;
+using AForge.Imaging.Filters;
+using AForge.Math.Geometry;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,7 +17,13 @@ namespace ImageProcessor
 {
     public partial class Form1 : Form
     {
+
+        private PictureModificator myPicAnalyzer = new PictureModificator();
+        
         private Bitmap bitmap;
+        private Bitmap imageNormal;
+
+
         public Form1()
         {
             InitializeComponent();
@@ -25,7 +35,9 @@ namespace ImageProcessor
             OpenFileDialog open = new OpenFileDialog();
             if (open.ShowDialog() == DialogResult.OK)
             {
-                bitmap = new Bitmap(open.FileName);
+                imageNormal = new Bitmap(open.FileName);
+                bitmap = imageNormal; //making them the same.
+                pictureBox2.Image = imageNormal;
                 pictureBox1.Image = bitmap;
             }
         }
@@ -47,6 +59,7 @@ namespace ImageProcessor
                     newBit.SetPixel(i, j, newCol);
                 }
             }
+
             bitmap = newBit;
 
             pictureBox1.Image = bitmap;
@@ -54,7 +67,37 @@ namespace ImageProcessor
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+            analyzePicture();
         }
+
+        private System.Drawing.Point[] ToPointsArray(List<IntPoint> points)
+        {
+            System.Drawing.Point[] array = new System.Drawing.Point[points.Count];
+
+            for (int i = 0, n = points.Count; i < n; i++)
+            {
+                array[i] = new System.Drawing.Point(points[i].X, points[i].Y);
+            }
+
+            return array;
+        }
+
+        private void analyzePicture()
+        {
+            try
+            {
+                myPicAnalyzer.setCurrentImage(bitmap);
+                myPicAnalyzer.applyGrayscale();
+                myPicAnalyzer.applySobelEdgeFilter();
+                myPicAnalyzer.markKnownForms();
+                pictureBox1.Image = myPicAnalyzer.getCurrentImage();
+            }
+            catch (Exception exc)
+            {
+
+            }
+        }
+
+
     }
 }
