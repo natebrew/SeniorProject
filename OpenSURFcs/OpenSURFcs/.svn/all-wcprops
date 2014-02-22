@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/86/trunk/OpenSURFcs/OpenSURFcs
+END
+SurfDescriptor.cs
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/81/trunk/OpenSURFcs/OpenSURFcs/SurfDescriptor.cs
+END
+IPoint.cs
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/81/trunk/OpenSURFcs/OpenSURFcs/IPoint.cs
+END
+OpenSURFcs.csproj
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/!svn/ver/81/trunk/OpenSURFcs/OpenSURFcs/OpenSURFcs.csproj
+END
+MathNet.Iridium.dll
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/!svn/ver/81/trunk/OpenSURFcs/OpenSURFcs/MathNet.Iridium.dll
+END
+IntegralImage.cs
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/81/trunk/OpenSURFcs/OpenSURFcs/IntegralImage.cs
+END
+FastHessian.cs
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/!svn/ver/88/trunk/OpenSURFcs/OpenSURFcs/FastHessian.cs
+END

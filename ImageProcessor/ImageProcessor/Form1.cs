@@ -37,7 +37,6 @@ namespace ImageProcessor
             {
                 imageNormal = new Bitmap(open.FileName);
                 bitmap = imageNormal; //making them the same.
-                pictureBox2.Image = imageNormal;
                 pictureBox1.Image = bitmap;
             }
         }
@@ -87,16 +86,40 @@ namespace ImageProcessor
             try
             {
                 myPicAnalyzer.setCurrentImage(bitmap);
-                myPicAnalyzer.applyGrayscale();
+                //myPicAnalyzer.applyGrayscale();
+
+                // use only one filter
+
                 //myPicAnalyzer.applySobelEdgeFilter();
                 //myPicAnalyzer.Laplacian3x3Filter();
                 //myPicAnalyzer.Laplacian5x5Filter();
                 //myPicAnalyzer.Laplacian3x3OfGaussian5x5Filter2();
                 //myPicAnalyzer.KirschFilter();
-                myPicAnalyzer.PrewittFilter();
+                //myPicAnalyzer.Laplacian5x5OfGaussian3x3Filter();
                 //myPicAnalyzer.Laplacian5x5OfGaussian5x5Filter2();
+
+                // this filter also applies a grey-scale to the image so we can skipp that step. 
+                myPicAnalyzer.Sobel3x3Filter();
+
                 myPicAnalyzer.markKnownForms();
                 pictureBox1.Image = myPicAnalyzer.getCurrentImage();
+            }
+            catch (Exception exc)
+            {
+
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //set the image
+                myPicAnalyzer.setCurrentImage(bitmap);
+                //filter the image
+                myPicAnalyzer.Sobel3x3Filter();
+                //find blobs
+                myPicAnalyzer.findBlobs();
             }
             catch (Exception exc)
             {

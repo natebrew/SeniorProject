@@ -30,9 +30,10 @@ namespace ImageProcessor
         }
 
 
+        //
         // added this for the filtering
-        public Bitmap ConvolutionFilter(
-                                             double[,] filterMatrix,
+        //
+        public Bitmap ConvolutionFilter(double[,] filterMatrix,
                                                   double factor = 1,
                                                        int bias = 0,
                                              bool grayscale = false)
@@ -156,8 +157,7 @@ namespace ImageProcessor
             return resultBitmap;
         }
 
-        public Bitmap ConvolutionFilter(
-                                                double[,] xFilterMatrix,
+        public Bitmap ConvolutionFilter(double[,] xFilterMatrix,
                                                 double[,] yFilterMatrix,
                                                       double factor = 1,
                                                            int bias = 0,
@@ -357,6 +357,7 @@ namespace ImageProcessor
 
         public void Sobel3x3Filter(bool grayscale = true)
         {
+            //currentImage = ConvolutionFilter(Matrix.Gaussian3x3, 1.0 / 16.0, 0, true);
             currentImage = ConvolutionFilter(Matrix.Sobel3x3Horizontal, Matrix.Sobel3x3Vertical, 1.0, 0, grayscale);
 
         }
@@ -368,7 +369,9 @@ namespace ImageProcessor
 
         public void KirschFilter(bool grayscale = true)
         {
-            currentImage = ConvolutionFilter(Matrix.Kirsch3x3Horizontal, Matrix.Kirsch3x3Vertical, 1.0, 0, grayscale);
+            //currentImage = ConvolutionFilter(Matrix.Gaussian3x3, 1.0 / 16.0, 0, true);
+
+            currentImage = ConvolutionFilter(Matrix.Kirsch3x3Horizontal, Matrix.Kirsch3x3Vertical, 1.0, 0, grayscale);  
         }
 
 
@@ -440,8 +443,8 @@ namespace ImageProcessor
                     BlobCounter bCounter = new BlobCounter();
  
                     bCounter.FilterBlobs = true;
-                    bCounter.MinHeight = 30;
-                    bCounter.MinWidth = 30;
+                    bCounter.MinHeight = 20;
+                    bCounter.MinWidth = 20;
  
                     bCounter.ProcessImage(bmData);
                     Blob[] baBlobs = bCounter.GetObjectsInformation();
@@ -509,7 +512,149 @@ namespace ImageProcessor
             }
             return false;
         }
- 
+
+        public bool findBlobs()
+        {
+            if (currentImage != null)
+            {
+                try
+                {
+                    Bitmap image = new Bitmap(this.currentImage);
+                    // lock image
+                    BitmapData bmData = image.LockBits(
+                        new Rectangle(0, 0, image.Width, image.Height),
+                        ImageLockMode.ReadWrite, image.PixelFormat);
+
+                    // turn background to black
+                    ColorFiltering cFilter = new ColorFiltering();
+                    cFilter.Red = new IntRange(0, 64);
+                    cFilter.Green = new IntRange(0, 64);
+                    cFilter.Blue = new IntRange(0, 64);
+                    cFilter.FillOutsideRange = false;
+                    cFilter.ApplyInPlace(bmData);
+
+
+                    // locate objects
+                    BlobCounter bCounter = new BlobCounter();
+
+                    bCounter.FilterBlobs = true;
+                    bCounter.MinHeight = 20;
+                    bCounter.MinWidth = 20;
+
+                    bCounter.ProcessImage(bmData);
+                   
+                    //unlock the image before doing anything with it.
+                    image.UnlockBits(bmData);
+                    Blob[] baBlobs = bCounter.GetObjects(image, true);
+
+                    // blobs is an array of the object gathered
+
+
+                    foreach (Blob b in baBlobs)
+                    {
+                       
+                        // some test code to shwo the new images
+                        using (Form form = new Form())
+                        {
+                            // this line is used to convert the blob to a new bitmap img
+                            Bitmap img = b.Image.ToManagedImage();
+
+                            form.StartPosition = FormStartPosition.CenterScreen;
+                            form.Size = img.Size;
+
+                            PictureBox pb = new PictureBox();
+                            pb.Dock = DockStyle.Fill;
+                            pb.Image = img;
+
+                            form.Controls.Add(pb);
+                            form.ShowDialog();
+                        }
+
+                    }
+
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.Write("There was an excption.");
+                }
+            }
+
+            //        // locate objects
+            //        BlobCounter bCounter = new BlobCounter();
+
+            //        bCounter.FilterBlobs = true;
+            //        bCounter.MinHeight = 30;
+            //        bCounter.MinWidth = 30;
+
+            //        bCounter.ProcessImage(bmData);
+            //        Blob[] baBlobs = bCounter.GetObjectsInformation();
+            //        image.UnlockBits(bmData);
+
+            //        // coloring objects
+            //        SimpleShapeChecker shapeChecker = new SimpleShapeChecker();
+
+            //        Graphics g = Graphics.FromImage(image);
+            //        Pen yellowPen = new Pen(Color.Yellow, 2); // circles
+            //        Pen redPen = new Pen(Color.Red, 2);       // quadrilateral
+            //        Pen brownPen = new Pen(Color.Brown, 2);   // quadrilateral with known sub-type
+            //        Pen greenPen = new Pen(Color.Green, 2);   // known triangle
+            //        Pen bluePen = new Pen(Color.Blue, 2);     // triangle
+
+            //        for (int i = 0, n = baBlobs.Length; i < n; i++)
+            //        {
+            //            List<IntPoint> edgePoints = bCounter.GetBlobsEdgePoints(baBlobs[i]);
+
+            //            AForge.Point center;
+            //            float radius;
+
+            //            // is circle ?
+            //            if (shapeChecker.IsCircle(edgePoints, out center, out radius))
+            //            {
+            //                g.DrawEllipse(yellowPen,
+            //                    (float)(center.X - radius), (float)(center.Y - radius),
+            //                    (float)(radius * 2), (float)(radius * 2));
+            //            }
+            //            else
+            //            {
+            //                List<IntPoint> corners;
+
+            //                // is triangle or quadrilateral
+            //                if (shapeChecker.IsConvexPolygon(edgePoints, out corners))
+            //                {
+            //                    PolygonSubType subType = shapeChecker.CheckPolygonSubType(corners);
+            //                    Pen pen;
+            //                    if (subType == PolygonSubType.Unknown)
+            //                    {
+            //                        pen = (corners.Count == 4) ? redPen : bluePen;
+            //                    }
+            //                    else
+            //                    {
+            //                        pen = (corners.Count == 4) ? brownPen : greenPen;
+            //                    }
+
+            //                    g.DrawPolygon(pen, ToPointsArray(corners));
+            //                }
+            //            }
+            //        }
+            //        yellowPen.Dispose();
+            //        redPen.Dispose();
+            //        greenPen.Dispose();
+            //        bluePen.Dispose();
+            //        brownPen.Dispose();
+            //        g.Dispose();
+            //        this.currentImage = image;
+            //        return true;
+            //    }
+            //    catch (Exception e)
+            //    {
+
+            //    }
+            //}
+            return false;
+        }
+
+
         private System.Drawing.Point[] ToPointsArray(List<IntPoint> points)
         {
             System.Drawing.Point[] array = new System.Drawing.Point[points.Count];
@@ -531,5 +676,6 @@ namespace ImageProcessor
         {
             return currentImage;
         }
+
     }
 }
