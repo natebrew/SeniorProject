@@ -394,7 +394,7 @@ namespace ImageProcessor
                 }
                 catch (Exception e)
                 {
- 
+                    Console.WriteLine(e.StackTrace);
                 }
             }
             return false;
@@ -413,7 +413,9 @@ namespace ImageProcessor
                     return true;
                 }
                 catch (Exception e)
-                { }
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
             }
             return false;
         }
@@ -507,7 +509,7 @@ namespace ImageProcessor
                 }
                 catch (Exception e)
                 {
-                    
+                    Console.WriteLine(e.StackTrace);
                 }
             }
             return false;
@@ -576,7 +578,7 @@ namespace ImageProcessor
                 }
                 catch (Exception e)
                 {
-                    System.Diagnostics.Debug.Write("There was an excption.");
+                    Console.WriteLine(e.StackTrace);
                 }
             }
 
