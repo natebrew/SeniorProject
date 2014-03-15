@@ -52,8 +52,11 @@ namespace seniorProjFinal
                 //img = ImgProcessor.Sobel3x3Filter(img, true);
                 //img2 = ImgProcessor.Sobel3x3Filter(img2, true);
 
-                img = ImgProcessor.PrewittFilter(img, false);
-                img2 = ImgProcessor.PrewittFilter(img2, false);
+                //img = ImgProcessor.PrewittFilter(img, false);
+                //img2 = ImgProcessor.PrewittFilter(img2, false);
+
+                //img = ImgProcessor.Laplacian3x3OfGaussian3x3Filter(img);
+                //img2 = ImgProcessor.Laplacian3x3OfGaussian3x3Filter(img2);
 
                 pictureBox1.Image = img;
                 pictureBox2.Image = img2;
