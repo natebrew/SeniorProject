@@ -41,25 +41,33 @@ public class ProperImage
 
         float rowSum = 0;
 
-        for (int i = 0; i < pImg.Width; i++)
+        BitmapData dataIn = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+        unsafe
         {
-            Color c = pImg.GetPixel(i, 0);
-            rowSum += (cR * c.R + cG * c.G + cB * c.B) / 255f;
-            img[0, i] = rowSum;
-        }
-
-        for (int i = 1; i < pImg.Height; i++)
-        {
-            rowSum = 0;
-            for (int j = 0; j < pImg.Width; j++)
+            byte* pIn = (byte*)(dataIn.Scan0.ToPointer());
+            for (int y = 0; y < dataIn.Height; y++)
             {
-                Color c = pImg.GetPixel(i, j);
-                rowSum += (cR * c.R + cG * c.G + cB * c.B) / 255f;
+                rowsum = 0;
+                for (int x = 0; x < dataIn.Width; x++)
+                {
+                    int cb = (byte)(pIn[0]);
+                    int cg = (byte)(pIn[1]);
+                    int cr = (byte)(pIn[2]);
 
-                // sum up the row and the value
-                img[i, j] = rowSum + img[i - 1, j];
+                    //
+                    rowsum += (cR * cr + cG * cg + cB * cb) / 255f;
+                    // integral image is rowsum + value above     
+                    if (y == 0)
+                        img[0, x] = rowsum;
+                    else
+                        img[y, x] = rowsum + img[y - 1, x];
+
+                    pIn += 3;
+                }
+                pIn += dataIn.Stride - dataIn.Width * 3;
             }
         }
+        image.UnlockBits(dataIn);
 
         // return our new ProperImage
         return img;
