@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Drawing;
@@ -34,26 +35,54 @@ namespace OpenSURFcs
       IntegralImage pic = new IntegralImage(image.Width, image.Height);
 
       float rowsum = 0;
-      for (int x = 0; x < image.Width; x++)
+      //for (int x = 0; x < image.Width; x++)
+      //{
+      //  Color c = image.GetPixel(x, 0);
+      //  rowsum += (cR * c.R + cG * c.G + cB * c.B) / 255f;
+      //  pic[0, x] = rowsum;
+      //}
+
+
+      //for (int y = 1; y < image.Height; y++)
+      //{
+      //  rowsum = 0;
+      //  for (int x = 0; x < image.Width; x++)
+      //  {
+      //    Color c = image.GetPixel(x, y);
+      //    rowsum += (cR * c.R + cG * c.G + cB * c.B) / 255f;
+
+      //    // integral image is rowsum + value above        
+      //    pic[y, x] = rowsum + pic[y - 1, x];
+      //  }
+      //}
+
+      BitmapData dataIn = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+      unsafe
       {
-        Color c = image.GetPixel(x, 0);
-        rowsum += (cR * c.R + cG * c.G + cB * c.B) / 255f;
-        pic[0, x] = rowsum;
+          byte* pIn = (byte*)(dataIn.Scan0.ToPointer());
+          for (int y = 0; y < dataIn.Height; y++)
+          {
+              rowsum = 0;
+              for (int x = 0; x < dataIn.Width; x++)
+              {
+                  int cb = (byte)(pIn[0]);
+                  int cg = (byte)(pIn[1]);
+                  int cr = (byte)(pIn[2]);
+
+                  // 0 1 2代表的次序是B G R  
+                  rowsum += (cR * cr + cG * cg + cB * cb) / 255f;
+                  // integral image is rowsum + value above     
+                  if (y == 0)
+                      pic[0, x] = rowsum;
+                  else
+                      pic[y, x] = rowsum + pic[y - 1, x];
+
+                  pIn += 3;
+              }
+              pIn += dataIn.Stride - dataIn.Width * 3;
+          }
       }
-
-
-      for (int y = 1; y < image.Height; y++)
-      {
-        rowsum = 0;
-        for (int x = 0; x < image.Width; x++)
-        {
-          Color c = image.GetPixel(x, y);
-          rowsum += (cR * c.R + cG * c.G + cB * c.B) / 255f;
-
-          // integral image is rowsum + value above        
-          pic[y, x] = rowsum + pic[y - 1, x];
-        }
-      }
+      image.UnlockBits(dataIn);
 
       return pic;
     }

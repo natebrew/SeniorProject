@@ -79,6 +79,7 @@
     <Compile Include="IPoint.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SurfDescriptor.cs" />
+    <Compile Include="SurfMatch.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

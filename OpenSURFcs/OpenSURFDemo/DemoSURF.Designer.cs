@@ -43,7 +43,7 @@
             this.pbMainPicture.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pbMainPicture.Location = new System.Drawing.Point(12, 12);
             this.pbMainPicture.Name = "pbMainPicture";
-            this.pbMainPicture.Size = new System.Drawing.Size(442, 422);
+            this.pbMainPicture.Size = new System.Drawing.Size(500, 500);
             this.pbMainPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbMainPicture.TabIndex = 0;
             this.pbMainPicture.TabStop = false;
@@ -51,7 +51,7 @@
             // btnRunSurf
             // 
             this.btnRunSurf.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnRunSurf.Location = new System.Drawing.Point(323, 440);
+            this.btnRunSurf.Location = new System.Drawing.Point(439, 524);
             this.btnRunSurf.Name = "btnRunSurf";
             this.btnRunSurf.Size = new System.Drawing.Size(134, 39);
             this.btnRunSurf.TabIndex = 1;
@@ -65,9 +65,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbMain2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pbMain2.Location = new System.Drawing.Point(465, 12);
+            this.pbMain2.Location = new System.Drawing.Point(542, 12);
             this.pbMain2.Name = "pbMain2";
-            this.pbMain2.Size = new System.Drawing.Size(345, 422);
+            this.pbMain2.Size = new System.Drawing.Size(500, 500);
             this.pbMain2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pbMain2.TabIndex = 2;
             this.pbMain2.TabStop = false;
@@ -78,7 +78,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(822, 485);
+            this.ClientSize = new System.Drawing.Size(1054, 569);
             this.Controls.Add(this.pbMain2);
             this.Controls.Add(this.btnRunSurf);
             this.Controls.Add(this.pbMainPicture);

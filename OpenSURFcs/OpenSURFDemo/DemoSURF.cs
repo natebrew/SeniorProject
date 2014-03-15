@@ -57,14 +57,10 @@ namespace OpenSURFDemo
 
                 //Do the comparison
 
-                List<IPoint> PointPairs = new List<IPoint>();
+                List<IPoint>[] matches = SurfMatch.getMatches(ipts, ipts2);
 
-                //first attempt
-                //findPairs(ipts, ipts2, PointPairs);
-
-                getMatches(ipts, ipts2, PointPairs);
-
-                Console.WriteLine("pairs size" + PointPairs.Count);
+                Console.WriteLine("Matches[0] size" + matches[0].Count);
+                Console.WriteLine("Matches[1] size" + matches[1].Count);
 
                 // Draw points on the image
                 PaintSURF(img, ipts);
@@ -78,7 +74,7 @@ namespace OpenSURFDemo
 
             watch.Stop();
             this.Text = "DemoSURF - Elapsed time: " + watch.Elapsed + 
-                        " for " + ipts.Count + "points";
+                        " for " + ipts.Count + "points and " + ipts2.Count + "points in img2" ;
         }
 
         private void PaintSURF(Bitmap img, List<IPoint> ipts)
