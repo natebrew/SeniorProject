@@ -376,6 +376,10 @@ namespace seniorProjFinal
                                                 bool grayscale = true)
         {
             Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
+                                                   myMatrix.Gaussian5x5Type2,
+                                                     1.0 / 256.0, 0, true);
+
+            resultBitmap = ConvolutionFilter(resultBitmap,
                                                  myMatrix.Sobel3x3Horizontal,
                                                    myMatrix.Sobel3x3Vertical,
                                                         1.0, 0, grayscale);
