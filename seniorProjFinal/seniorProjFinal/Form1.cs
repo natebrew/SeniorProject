@@ -41,6 +41,10 @@ namespace seniorProjFinal
                 // Load an Image
                 Bitmap img = new Bitmap(pathToFile);
                 Bitmap img2 = new Bitmap(path);
+
+                img.SetResolution(360, 360);
+                img2.SetResolution(360, 360);
+
                 //pictureBox1.Image = img;
                 //pictureBox2.Image = img2;
 
