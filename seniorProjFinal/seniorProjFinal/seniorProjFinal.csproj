@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MathNet.Iridium">
-      <HintPath>..\..\..\..\SeniorProject\OpenSURFcs\OpenSURFcs\MathNet.Iridium.dll</HintPath>
+      <HintPath>..\..\OpenSURFcs\OpenSURFcs\MathNet.Iridium.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

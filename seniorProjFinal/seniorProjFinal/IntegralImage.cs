@@ -34,6 +34,21 @@ namespace seniorProjFinal
         {
             IntegralImage pic = new IntegralImage(image.Width, image.Height);
 
+            for (int y = 0; y < image.Height; y++)
+            {
+                for (int x = 0; x < image.Width; x++)
+                {
+                    pic[y, x] = (float)image.GetPixel(x, y).ToArgb();
+                }
+            }
+
+            return pic;
+        }
+
+        public static IntegralImage FromImageGrey(Bitmap image)
+        {
+            IntegralImage pic = new IntegralImage(image.Width, image.Height);
+
             float rowsum = 0;
             BitmapData dataIn = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
 
