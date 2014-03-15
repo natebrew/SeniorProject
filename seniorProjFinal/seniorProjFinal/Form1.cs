@@ -49,15 +49,18 @@ namespace seniorProjFinal
                 //pictureBox2.Image = img2;
 
                 // trying edge detection here
-                img = ImgProcessor.Sobel3x3Filter(img, false);
-                img2 = ImgProcessor.Sobel3x3Filter(img2, false);
+                //img = ImgProcessor.Sobel3x3Filter(img, true);
+                //img2 = ImgProcessor.Sobel3x3Filter(img2, true);
+
+                img = ImgProcessor.PrewittFilter(img, false);
+                img2 = ImgProcessor.PrewittFilter(img2, false);
 
                 pictureBox1.Image = img;
                 pictureBox2.Image = img2;
 
                 // Create Integral Image
-                IntegralImage iimg = IntegralImage.FromImage(img);
-                IntegralImage iimg2 = IntegralImage.FromImage(img2);
+                IntegralImage iimg = IntegralImage.FromImageGrey(img);
+                IntegralImage iimg2 = IntegralImage.FromImageGrey(img2);
 
                 // Extract the interest points
                 ipts1 = FastHessian.getIpoints(0.0002f, 5, 2, iimg);
