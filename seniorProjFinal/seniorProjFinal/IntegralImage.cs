@@ -32,11 +32,16 @@ namespace seniorProjFinal
 
         public static IntegralImage FromImage(Bitmap image)
         {
-            IntegralImage pic = new IntegralImage(image.Width, image.Height);
+            int height = image.Height;
+            int width = image.Width;
 
-            for (int y = 0; y < image.Height; y++)
+            IntegralImage pic = new IntegralImage(width, height);
+
+            //Console.WriteLine("Height = " + height + "   Width = " + width);
+
+            for (int y = 0; y < height; y++)
             {
-                for (int x = 0; x < image.Width; x++)
+                for (int x = 0; x < width; x++)
                 {
                     pic[y, x] = (float)image.GetPixel(x, y).ToArgb();
                 }

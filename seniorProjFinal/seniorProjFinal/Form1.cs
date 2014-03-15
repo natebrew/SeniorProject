@@ -49,11 +49,11 @@ namespace seniorProjFinal
                 //pictureBox2.Image = img2;
 
                 // trying edge detection here
-                //img = ImgProcessor.Sobel3x3Filter(img, true);
-                //img2 = ImgProcessor.Sobel3x3Filter(img2, true);
+                img = ImgProcessor.Sobel3x3Filter(img, true);
+                img2 = ImgProcessor.Sobel3x3Filter(img2, true);
 
-                img = ImgProcessor.PrewittFilter(img, false);
-                img2 = ImgProcessor.PrewittFilter(img2, false);
+                //img = ImgProcessor.Laplacian3x3OfGaussian3x3Filter(img);
+                //img2 = ImgProcessor.Laplacian3x3OfGaussian3x3Filter(img2);
 
                 pictureBox1.Image = img;
                 pictureBox2.Image = img2;
@@ -76,8 +76,8 @@ namespace seniorProjFinal
                 Console.WriteLine("Matches[1] size" + matches[1].Count);
 
                 // Draw points on the image
-                PaintSURF(img, ipts1);
-                PaintSURF(img2, ipts2);
+                PaintSURF(img, matches[0]);
+                PaintSURF(img2, matches[1]);
 
             }
             catch
