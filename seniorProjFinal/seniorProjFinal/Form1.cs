@@ -97,8 +97,12 @@ namespace seniorProjFinal
                     // compute the avg
                     Console.WriteLine(matches[0].Count() + " matches, list 1 count = " + ipts1.Count()
                                       + " list 2 count = " + ipts2.Count());
-                    avg = ((matches[1].Count() / ipts1.Count() * 100) + (matches[1].Count() / ipts2.Count()) * 100) / 2;
-
+                    avg = ((float)matches[1].Count() / (float)ipts1.Count() + (float)matches[0].Count() / (float)ipts2.Count()) / 2 * 100;
+                    Console.WriteLine("MATCHES 1 = " + matches[1].Count());
+                    Console.WriteLine("IPTS 1 = " + ipts1.Count());
+                    Console.WriteLine("MATCHES 2 = " + matches[0].Count());
+                    Console.WriteLine("IPTS 2 = " + ipts2.Count());
+                    Console.WriteLine("AVERAGE = " + avg);                 
                     
                     // add results to a new list if matches % is better change currency to better match
                     if (avg > best)
