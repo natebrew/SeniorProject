@@ -30,25 +30,23 @@ namespace seniorProjFinal
             this.Matrix = new float[height, width];
         }
 
-        public static IntegralImage FromImage(Bitmap image)
-        {
-            int height = image.Height;
-            int width = image.Width;
+        //public static IntegralImage FromImage(Bitmap image)
+        //{
+        //    int height = image.Height;
+        //    int width = image.Width;
 
-            IntegralImage pic = new IntegralImage(width, height);
+        //    IntegralImage pic = new IntegralImage(width, height);
 
-            //Console.WriteLine("Height = " + height + "   Width = " + width);
+        //    for (int y = 0; y < height; y++)
+        //    {
+        //        for (int x = 0; x < width; x++)
+        //        {
+        //            pic[y, x] = (float)image.GetPixel(x, y).ToArgb();
+        //        }
+        //    }
 
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    pic[y, x] = (float)image.GetPixel(x, y).ToArgb();
-                }
-            }
-
-            return pic;
-        }
+        //    return pic;
+        //}
 
         public static IntegralImage FromImageGrey(Bitmap image)
         {

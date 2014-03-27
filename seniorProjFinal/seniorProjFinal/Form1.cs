@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace seniorProjFinal
     {
 
         List<IPoint> ipts1 = new List<IPoint>();
-        List<IPoint> ipts2 = new List<IPoint>();
+        //List<IPoint> ipts2 = new List<IPoint>();
 
         public Form1()
         {
@@ -28,9 +29,9 @@ namespace seniorProjFinal
             openFileDialog.ShowDialog();
             string pathToFile = openFileDialog.FileName;
 
-            OpenFileDialog open = new OpenFileDialog();
-            open.ShowDialog();
-            string path = open.FileName;
+            //OpenFileDialog open = new OpenFileDialog();
+            //open.ShowDialog();
+            //string path = open.FileName;
 
             // Processing starts here
             Stopwatch watch = new Stopwatch();
@@ -40,44 +41,103 @@ namespace seniorProjFinal
             {
                 // Load an Image
                 Bitmap img = new Bitmap(pathToFile);
-                Bitmap img2 = new Bitmap(path);
-
-                img.SetResolution(360, 360);
-                img2.SetResolution(360, 360);
-
-                //pictureBox1.Image = img;
-                //pictureBox2.Image = img2;
+                //Bitmap img2 = new Bitmap(path);
 
                 // trying edge detection here
                 img = ImgProcessor.Sobel3x3Filter(img, true);
-                img2 = ImgProcessor.Sobel3x3Filter(img2, true);
-
-                //img = ImgProcessor.Laplacian3x3OfGaussian3x3Filter(img);
-                //img2 = ImgProcessor.Laplacian3x3OfGaussian3x3Filter(img2);
+                //img2 = ImgProcessor.Sobel3x3Filter(img2, true);
 
                 pictureBox1.Image = img;
-                pictureBox2.Image = img2;
+                //pictureBox2.Image = img2;
 
                 // Create Integral Image
                 IntegralImage iimg = IntegralImage.FromImageGrey(img);
-                IntegralImage iimg2 = IntegralImage.FromImageGrey(img2);
+                //IntegralImage iimg2 = IntegralImage.FromImageGrey(img2);
 
-                // Extract the interest points
-                ipts1 = FastHessian.getIpoints(0.0002f, 5, 2, iimg);
-                ipts2 = FastHessian.getIpoints(0.0002f, 5, 2, iimg2);
+                // 50% matching on bills and 10-15% on similar coins 0-10% on different coins
+                ipts1 = FastHessian.getIpoints(0.001f, 5, 2, iimg);
+                //ipts2 = FastHessian.getIpoints(0.001f, 5, 2, iimg2);
 
                 // Describe the interest points
                 SurfDescriptor.DecribeInterestPoints(ipts1, false, false, iimg);
-                SurfDescriptor.DecribeInterestPoints(ipts2, false, false, iimg2);
 
-                List<IPoint>[] matches = SurfMatch.getMatches(ipts1, ipts2);
+                // loop through our datasets, which is represented by each file
+                float best = 0;
+                float avg = 0;
+                string currency = "none";
+                string[] files = Directory.GetFiles(@"C:\Users\Nate Brewster\Desktop\currencyData\", "*.jpg");
+                
 
-                Console.WriteLine("Matches[0] size" + matches[0].Count);
-                Console.WriteLine("Matches[1] size" + matches[1].Count);
+                for (int i = 0; i < files.Length; i++)
+                {
+                    List<IPoint> ipts2 = new List<IPoint>();
+
+                    Console.WriteLine("creating a new image from file " + files[i]);
+                    // create a new image
+                    Bitmap newImg = new Bitmap(files[i]);
+
+                    Console.WriteLine("doing the edge detection");
+                    // edge detection
+                    newImg = ImgProcessor.Sobel3x3Filter(newImg, true);
+
+                    Console.WriteLine("making the integral image");
+                    // new integral image
+                    IntegralImage iimg2 = IntegralImage.FromImageGrey(newImg);
+
+                    Console.WriteLine("gathering interest points");
+                    // our list of interest points from our data images
+                    ipts2 = FastHessian.getIpoints(0.001f, 5, 2, iimg2);
+                    SurfDescriptor.DecribeInterestPoints(ipts2, false, false, iimg2);
+
+                    Console.WriteLine("getting the number of matches");
+                    // get the matches from our current comparison
+                    List<IPoint>[] matches = SurfMatch.getMatches(ipts1, ipts2);
+
+                    Console.WriteLine("computing the average");
+                    // compute the avg
+                    Console.WriteLine(matches[0].Count() + " matches, list 1 count = " + ipts1.Count()
+                                      + " list 2 count = " + ipts2.Count());
+                    avg = ((matches[1].Count() / ipts1.Count() * 100) + (matches[1].Count() / ipts2.Count()) * 100) / 2;
+
+                    
+                    // add results to a new list if matches % is better change currency to better match
+                    if (avg > best)
+                    {
+                        Console.WriteLine("making the assignments because we found something better");
+                        best = avg;
+                        currency = files[i];
+                    }
+
+                    // clear our list for the next iteration
+                    //Array.Clear(matches, 0, matches.Length);
+
+                    for (int j = 0; j < matches.Count(); j++)
+                    {
+                        matches[j].Clear();
+                    }
+                    ipts2.Clear();
+                }
+
+                Console.WriteLine(currency);
+
+                //Console.WriteLine("Matches[0] size" + matches[0].Count);
+                //Console.WriteLine("Matches[1] size" + matches[1].Count);
+
+                // write a set of ipts to a file for our file system
+                //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Nate Brewster\Desktop\dimeFront.txt", true))
+                //{
+                //    foreach (IPoint ip in ipts1)
+                //    {
+                //        for (int i = 0; i < ip.descriptorLength; i++)
+                //        {
+                //            file.WriteLine(ip.descriptor[i]);
+                //        }
+                //    }
+                //}
 
                 // Draw points on the image
-                PaintSURF(img, matches[0]);
-                PaintSURF(img2, matches[1]);
+                //PaintSURF(img, matches[0]);
+                //PaintSURF(img2, matches[1]);
 
             }
             catch
@@ -87,8 +147,8 @@ namespace seniorProjFinal
 
             // Processing stops here
             watch.Stop();
-            this.Text = "DemoSURF - Elapsed time: " + watch.Elapsed +
-                        " for " + ipts1.Count + "points and " + ipts2.Count + "points in img2";
+            this.Text = "DemoSURF - Elapsed time: " + watch.Elapsed;
+                       // " for " + ipts1.Count + "points and " + ipts2.Count + "points in img2";
         }
 
         private void PaintSURF(Bitmap img, List<IPoint> ipts)
