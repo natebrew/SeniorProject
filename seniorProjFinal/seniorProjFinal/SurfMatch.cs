@@ -39,8 +39,8 @@ namespace seniorProjFinal
                         d2 = dist;
                     }
                 }
-                // If match ha s a d1:d2 ratio < 0.65 ipoints are a match  
-                if (d1 / d2 < 0.77) //越小Match点越少  
+                // If match ha s a d1:d2 ratio < 0.77 ipoints are a match  
+                if ((d1 / d2) < 0.77)  
                 {
                     matches[0].Add(ipts1[i]);
                     matches[1].Add(match);
@@ -56,14 +56,5 @@ namespace seniorProjFinal
                 sum += (ip1.descriptor[i] - ip2.descriptor[i]) * (ip1.descriptor[i] - ip2.descriptor[i]);
             return Math.Sqrt(sum);
         }
-
-        public static bool IsNear(this IPoint ip1, IPoint ip2)
-        {
-            double dis = GetDistance(ip1, ip2);
-            Console.WriteLine("Gap:{0}", dis);
-            //return dis < .25;
-            return dis < .3;
-        }
-
     }
 }

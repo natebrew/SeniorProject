@@ -22,6 +22,7 @@ namespace seniorProjFinal
             set { Matrix[y, x] = value; }
         }
 
+        // blank constructor using height and width
         private IntegralImage(int width, int height)
         {
             this.Width = width;
@@ -30,24 +31,7 @@ namespace seniorProjFinal
             this.Matrix = new float[height, width];
         }
 
-        //public static IntegralImage FromImage(Bitmap image)
-        //{
-        //    int height = image.Height;
-        //    int width = image.Width;
-
-        //    IntegralImage pic = new IntegralImage(width, height);
-
-        //    for (int y = 0; y < height; y++)
-        //    {
-        //        for (int x = 0; x < width; x++)
-        //        {
-        //            pic[y, x] = (float)image.GetPixel(x, y).ToArgb();
-        //        }
-        //    }
-
-        //    return pic;
-        //}
-
+        // our constructor for creating using 256 RGB values.
         public static IntegralImage FromImageGrey(Bitmap image)
         {
             IntegralImage pic = new IntegralImage(image.Width, image.Height);
@@ -67,7 +51,6 @@ namespace seniorProjFinal
                         int cg = (byte)(pIn[1]);
                         int cr = (byte)(pIn[2]);
 
-                        //
                         rowsum += (cR * cr + cG * cg + cB * cb) / 255f;
                         // integral image is rowsum + value above     
                         if (y == 0)
@@ -85,7 +68,7 @@ namespace seniorProjFinal
             return pic;
         }
 
-
+        // Compute the BoxIntegral
         public float BoxIntegral(int row, int col, int rows, int cols)
         {
             // The subtraction by one for row/col is because row/col is inclusive.
@@ -103,30 +86,16 @@ namespace seniorProjFinal
             return Math.Max(0, A - B - C + D);
         }
 
-        /// <summary>
-        /// Get Haar Wavelet X repsonse
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        // Get Haar Wavelet X repsonse
         public float HaarX(int row, int column, int size)
         {
-            return BoxIntegral(row - size / 2, column, size, size / 2)
-              - 1 * BoxIntegral(row - size / 2, column - size / 2, size, size / 2);
+            return BoxIntegral(row - size / 2, column, size, size / 2) - 1 * BoxIntegral(row - size / 2, column - size / 2, size, size / 2);
         }
 
-        /// <summary>
-        /// Get Haar Wavelet Y repsonse
-        /// </summary>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
+        // Get Haar Wavelet Y repsonse
         public float HaarY(int row, int column, int size)
         {
-            return BoxIntegral(row, column - size / 2, size / 2, size)
-              - 1 * BoxIntegral(row - size / 2, column - size / 2, size / 2, size);
+            return BoxIntegral(row, column - size / 2, size / 2, size) - 1 * BoxIntegral(row - size / 2, column - size / 2, size / 2, size);
         }
     }
 }
