@@ -65,7 +65,7 @@ namespace seniorProjFinal
                 float best = 0;
                 float avg = 0;
                 string currency = "none";
-                string[] files = Directory.GetFiles(@"C:\Users\Nate Brewster\Desktop\currencyData\", "*.jpg");
+                string[] files = Directory.GetFiles(@"..\currencyData\", "*.jpg");
                 
 
                 for (int i = 0; i < files.Length; i++)
@@ -128,7 +128,7 @@ namespace seniorProjFinal
                 //Console.WriteLine("Matches[1] size" + matches[1].Count);
 
                 // write a set of ipts to a file for our file system
-                //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Users\Nate Brewster\Desktop\dimeFront.txt", true))
+                //using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"..\Users\Nate Brewster\Desktop\dimeFront.txt", true))
                 //{
                 //    foreach (IPoint ip in ipts1)
                 //    {
