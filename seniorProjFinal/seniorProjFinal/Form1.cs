@@ -57,7 +57,7 @@ namespace seniorProjFinal
                 // loop through our datasets, which is represented by each file
                 float best = 0;
                 float avg = 0;
-                string currencyDir = "none";
+                string currencyDir = "Not Found";
                 //string[] files = Directory.GetFiles(@"J:\Dropbox\My Projects\New folder\SeniorProject\currencyData", "*.jpg");
                 string[] files = Directory.GetFiles(@"C:\Users\Jeremy\Dropbox\My Projects\New folder\SeniorProject\currencyData", "*.txt");
                 
@@ -103,14 +103,14 @@ namespace seniorProjFinal
                  //                     + " list 2 count = " + ipts2.Count());
                     Console.WriteLine(files[i]);
                     avg = ((float)matches[1].Count() / (float)ipts1.Count() + (float)matches[0].Count() / (float)ipts2.Count()) / 2 * 100;
-                    Console.WriteLine("MATCHES 1 = " + matches[1].Count());
+                    Console.WriteLine("MATCHES = " + matches[1].Count());
                     Console.WriteLine("IPTS 1 = " + ipts1.Count());
-                    Console.WriteLine("MATCHES 2 = " + matches[0].Count());
+                    //Console.WriteLine("MATCHES 2 = " + matches[0].Count());
                     Console.WriteLine("IPTS 2 = " + ipts2.Count());
                     Console.WriteLine("AVERAGE = " + avg);                 
                     
                     // add results to a new list if matches % is better change currency to better match
-                    if (avg > best && avg > 10.0)
+                    if (avg > best && avg > 3.0)
                     {
                   //      Console.WriteLine("making the assignments because we found something better");
                         best = avg;

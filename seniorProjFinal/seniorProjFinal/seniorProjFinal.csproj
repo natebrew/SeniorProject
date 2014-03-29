@@ -61,7 +61,6 @@
     <Compile Include="myMatrix.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StaticMoney.cs" />
     <Compile Include="SurfDescriptor.cs" />
     <Compile Include="SurfMatch.cs" />
     <EmbeddedResource Include="Form1.resx">
