@@ -14,6 +14,7 @@ using Microsoft.Phone.Data.Linq.Mapping;
 using System.IO.IsolatedStorage;
 using System.IO;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace PiggyBank_1
 {
@@ -94,7 +95,8 @@ namespace PiggyBank_1
                 });
 
                 // Save photo to the media library camera roll.
-                library.SavePictureToCameraRoll(fileName, e.ImageStream);
+                //library.SavePictureToCameraRoll(fileName, e.ImageStream);
+                library.SavePicture(fileName, e.ImageStream);
 
                 // Write message to the UI thread.
                 Deployment.Current.Dispatcher.BeginInvoke(delegate()
@@ -132,8 +134,25 @@ namespace PiggyBank_1
             {
                 // Close image stream
                 e.ImageStream.Close();
+
+                analyzeImage(fileName);
             }
 
+        }
+
+        private void analyzeImage(string fileName)
+        {
+            using (IsolatedStorageFile isStore = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                
+                if (isStore.FileExists(fileName))
+                {
+                    
+                    BitmapImage img = new BitmapImage(new Uri(fileName));
+
+                }
+            }
+           
         }
 
         // Informs when thumbnail photo has been taken, saves to the local folder
@@ -267,16 +286,6 @@ namespace PiggyBank_1
                 {
                     // Start image capture.
                     cam.CaptureImage();
-
-                    //
-                    //process image here
-                    //
-
-
-                    // navigate back to the home page
-                    //NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
-
-
                 }
                 catch (Exception ex)
                 {

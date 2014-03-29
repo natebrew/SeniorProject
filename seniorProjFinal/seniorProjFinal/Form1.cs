@@ -25,6 +25,8 @@ namespace seniorProjFinal
 
         private void button1_Click(object sender, EventArgs e)
         {
+            currency.Text = "None";
+
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog();
             string pathToFile = openFileDialog.FileName;
@@ -57,7 +59,7 @@ namespace seniorProjFinal
                 float avg = 0;
                 string currencyDir = "none";
                 //string[] files = Directory.GetFiles(@"J:\Dropbox\My Projects\New folder\SeniorProject\currencyData", "*.jpg");
-                string[] files = Directory.GetFiles(@"J:\Dropbox\My Projects\New folder\SeniorProject\currencyData", "*.txt");
+                string[] files = Directory.GetFiles(@"C:\Users\Jeremy\Dropbox\My Projects\New folder\SeniorProject\currencyData", "*.txt");
                 
                 for (int i = 0; i < files.Length; i++)
                 {
@@ -99,15 +101,16 @@ namespace seniorProjFinal
                     // compute the avg
                  //   Console.WriteLine(matches[0].Count() + " matches, list 1 count = " + ipts1.Count()
                  //                     + " list 2 count = " + ipts2.Count());
+                    Console.WriteLine(files[i]);
                     avg = ((float)matches[1].Count() / (float)ipts1.Count() + (float)matches[0].Count() / (float)ipts2.Count()) / 2 * 100;
-                 //   Console.WriteLine("MATCHES 1 = " + matches[1].Count());
-                 //   Console.WriteLine("IPTS 1 = " + ipts1.Count());
-                 //   Console.WriteLine("MATCHES 2 = " + matches[0].Count());
-                 //   Console.WriteLine("IPTS 2 = " + ipts2.Count());
-                 //   Console.WriteLine("AVERAGE = " + avg);                 
+                    Console.WriteLine("MATCHES 1 = " + matches[1].Count());
+                    Console.WriteLine("IPTS 1 = " + ipts1.Count());
+                    Console.WriteLine("MATCHES 2 = " + matches[0].Count());
+                    Console.WriteLine("IPTS 2 = " + ipts2.Count());
+                    Console.WriteLine("AVERAGE = " + avg);                 
                     
                     // add results to a new list if matches % is better change currency to better match
-                    if (avg > best)
+                    if (avg > best && avg > 10.0)
                     {
                   //      Console.WriteLine("making the assignments because we found something better");
                         best = avg;
@@ -184,65 +187,74 @@ namespace seniorProjFinal
             text.ShowDialog();
             string textFile = text.FileName;
 
-            Console.WriteLine(textFile);
-
-            string lineToFile = "";
-
-            try
+            if (textFile == "" || pathToFile == "")
             {
-                Bitmap img = new Bitmap(pathToFile);
+                // if no files finish here. 
+                Console.WriteLine("Files Not Valid");
+                return;
+            }
+            else
+            {
+                Console.WriteLine(textFile);
 
-                // edge detection here
-                img = ImgProcessor.Sobel3x3Filter(img, true);
+                string lineToFile = "";
 
-                // Create Integral Image
-                IntegralImage iimg = IntegralImage.FromImageGrey(img);
-
-                // 50% matching on bills and 10-15% on similar coins 0-10% on different coins
-                iptsGet = FastHessian.getIpoints(0.001f, 5, 2, iimg);
-
-                // Describe the interest points
-                SurfDescriptor.DecribeInterestPoints(iptsGet, false, false, iimg);
-
-                // trying to write the IPoints to a file
-
-                // the format is 
-                // IPointNumber,x,y,scale,response,orientation,laplacian,descriptorLength,descriptor1,..descriptor64
-
-                int num = 1;
-
-                using (System.IO.StreamWriter file = new System.IO.StreamWriter(textFile))
+                try
                 {
+                    Bitmap img = new Bitmap(pathToFile);
 
-                    foreach (IPoint ip in iptsGet)
+                    // edge detection here
+                    img = ImgProcessor.Sobel3x3Filter(img, true);
+
+                    // Create Integral Image
+                    IntegralImage iimg = IntegralImage.FromImageGrey(img);
+
+                    // 50% matching on bills and 10-15% on similar coins 0-10% on different coins
+                    iptsGet = FastHessian.getIpoints(0.001f, 5, 2, iimg);
+
+                    // Describe the interest points
+                    SurfDescriptor.DecribeInterestPoints(iptsGet, false, false, iimg);
+
+                    // trying to write the IPoints to a file
+
+                    // the format is 
+                    // IPointNumber,x,y,scale,response,orientation,laplacian,descriptorLength,descriptor1,..descriptor64
+
+                    int num = 1;
+
+                    using (System.IO.StreamWriter file = new System.IO.StreamWriter(textFile))
                     {
-                        lineToFile = num.ToString() + "," +
-                                     ip.x.ToString() + "," + ip.y.ToString() + "," +
-                                     ip.scale.ToString() + "," + ip.response.ToString() + "," +
-                                     ip.orientation.ToString() + "," + ip.laplacian.ToString() + "," +
-                                     ip.descriptorLength.ToString() + ",";
-                        string descriptors = "";
 
-                        for (int i = 0; i < ip.descriptorLength; i++)
+                        foreach (IPoint ip in iptsGet)
                         {
-                            if (i < 63)
-                                descriptors = descriptors + ip.descriptor[i].ToString() + ",";
-                            else
-                                descriptors = descriptors + ip.descriptor[i].ToString();
+                            lineToFile = num.ToString() + "," +
+                                         ip.x.ToString() + "," + ip.y.ToString() + "," +
+                                         ip.scale.ToString() + "," + ip.response.ToString() + "," +
+                                         ip.orientation.ToString() + "," + ip.laplacian.ToString() + "," +
+                                         ip.descriptorLength.ToString() + ",";
+                            string descriptors = "";
+
+                            for (int i = 0; i < ip.descriptorLength; i++)
+                            {
+                                if (i < 63)
+                                    descriptors = descriptors + ip.descriptor[i].ToString() + ",";
+                                else
+                                    descriptors = descriptors + ip.descriptor[i].ToString();
+                            }
+
+                            lineToFile = lineToFile + descriptors;
+
+                            file.WriteLine(lineToFile);
+                            num++;
                         }
 
-                        lineToFile = lineToFile + descriptors;
-
-                        file.WriteLine(lineToFile);
-                        num++;
+                        Console.WriteLine("Finished");
                     }
-
-                    //Console.WriteLine(num);
                 }
-            }
-            catch (Exception)
-            {
-               // left blank on purpose
+                catch (Exception)
+                {
+                    // left blank on purpose
+                }
             }
         }
     }
