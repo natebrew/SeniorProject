@@ -302,5 +302,5 @@ namespace seniorProjFinal
             float pi = (float)Math.PI;
             return 1f / (2f * pi * sig * sig) * (float)Math.Exp(-(x * x + y * y) / (2.0f * sig * sig));
         }
-    } // SurfDescriptor
+    } 
 } 

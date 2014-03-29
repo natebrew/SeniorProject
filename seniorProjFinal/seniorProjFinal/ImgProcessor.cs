@@ -279,99 +279,6 @@ namespace seniorProjFinal
             return resultBitmap;
         }
 
-        public static Bitmap Laplacian3x3Filter(this Bitmap sourceBitmap,
-                                                    bool grayscale = true)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                                    myMatrix.Laplacian3x3, 1.0, 0, grayscale);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap Laplacian5x5Filter(this Bitmap sourceBitmap,
-                                                    bool grayscale = true)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                                    myMatrix.Laplacian5x5, 1.0, 0, grayscale);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap LaplacianOfGaussianFilter(this Bitmap sourceBitmap)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                                  myMatrix.LaplacianOfGaussian, 1.0, 0, true);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap Laplacian3x3OfGaussian3x3Filter(this Bitmap sourceBitmap)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                                   myMatrix.Gaussian3x3, 1.0 / 16.0, 0, true);
-
-            resultBitmap = ConvolutionFilter(resultBitmap,
-                                 myMatrix.Laplacian3x3, 1.0, 0, false);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap Laplacian3x3OfGaussian5x5Filter1(this Bitmap sourceBitmap)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                             myMatrix.Gaussian5x5Type1, 1.0 / 159.0, 0, true);
-
-            resultBitmap = ConvolutionFilter(resultBitmap,
-                                 myMatrix.Laplacian3x3, 1.0, 0, false);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap Laplacian3x3OfGaussian5x5Filter2(this Bitmap sourceBitmap)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                             myMatrix.Gaussian5x5Type2, 1.0 / 256.0, 0, true);
-
-            resultBitmap = ConvolutionFilter(resultBitmap,
-                                 myMatrix.Laplacian3x3, 1.0, 0, false);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap Laplacian5x5OfGaussian3x3Filter(this Bitmap sourceBitmap)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                                   myMatrix.Gaussian3x3, 1.0 / 16.0, 0, true);
-
-            resultBitmap = ConvolutionFilter(resultBitmap,
-                                 myMatrix.Laplacian5x5, 1.0, 0, false);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap Laplacian5x5OfGaussian5x5Filter1(this Bitmap sourceBitmap)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                             myMatrix.Gaussian5x5Type1, 1.0 / 159.0, 0, true);
-
-            resultBitmap = ConvolutionFilter(resultBitmap,
-                                 myMatrix.Laplacian5x5, 1.0, 0, false);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap Laplacian5x5OfGaussian5x5Filter2(this Bitmap sourceBitmap)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                                                   myMatrix.Gaussian5x5Type2,
-                                                     1.0 / 256.0, 0, true);
-
-            resultBitmap = ConvolutionFilter(resultBitmap,
-                                 myMatrix.Laplacian5x5, 1.0, 0, false);
-
-            return resultBitmap;
-        }
-
         public static Bitmap Sobel3x3Filter(this Bitmap sourceBitmap,
                                                 bool grayscale = true)
         {
@@ -382,28 +289,6 @@ namespace seniorProjFinal
             resultBitmap = ConvolutionFilter(resultBitmap,
                                                  myMatrix.Sobel3x3Horizontal,
                                                    myMatrix.Sobel3x3Vertical,
-                                                        1.0, 0, grayscale);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap PrewittFilter(this Bitmap sourceBitmap,
-                                               bool grayscale = true)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                                               myMatrix.Prewitt3x3Horizontal,
-                                                 myMatrix.Prewitt3x3Vertical,
-                                                        1.0, 0, grayscale);
-
-            return resultBitmap;
-        }
-
-        public static Bitmap KirschFilter(this Bitmap sourceBitmap,
-                                              bool grayscale = true)
-        {
-            Bitmap resultBitmap = ConvolutionFilter(sourceBitmap,
-                                                myMatrix.Kirsch3x3Horizontal,
-                                                  myMatrix.Kirsch3x3Vertical,
                                                         1.0, 0, grayscale);
 
             return resultBitmap;
