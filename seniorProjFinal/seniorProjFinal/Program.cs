@@ -12,8 +12,10 @@
  * point is. It uses a sobel 3x3 filter for the edge detection. This code
  * is our original code with inspiration from the following open source
  * projects:
+ * 
  * Chris Evens http://www.chrisevansdev.com/computer-vision-opensurf.html
  * Dewald Esterhuizen http://softwarebydefault.com
+ * vabc3 https://github.com/vabc3/MineStudio/blob/master/OpenSURFcs/Match.cs
  * 
  * This code is free to use, redistribute, and refactor. We have no
  * liability towards the unauthorized use or misuse of this software.
