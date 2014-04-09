@@ -25,7 +25,7 @@ namespace seniorProjFinal
 
         private void button1_Click(object sender, EventArgs e)
         {
-            currency.Text = "None";
+            currency.Text = "Waiting";
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.ShowDialog();
@@ -59,7 +59,8 @@ namespace seniorProjFinal
                 float avg = 0;
                 string currencyDir = "Not Found";
                 //string[] files = Directory.GetFiles(@"J:\Dropbox\My Projects\New folder\SeniorProject\currencyData", "*.jpg");
-                string[] files = Directory.GetFiles(@"C:\Users\Jeremy\Dropbox\My Projects\New folder\SeniorProject\currencyData", "*.txt");
+                //string[] files = Directory.GetFiles(@"C:\Users\Jeremy\Dropbox\My Projects\New folder\SeniorProject\currencyData", "*.txt");
+                string[] files = Directory.GetFiles(@"C:\Users\Nate Brewster\Documents\SeniorProject\currencyData", "*.txt");
                 
                 for (int i = 0; i < files.Length; i++)
                 {
@@ -110,7 +111,7 @@ namespace seniorProjFinal
                     //Console.WriteLine("AVERAGE = " + avg);                 
                     
                     // add results to a new list if matches % is better change currency to better match
-                    if (avg > best && avg > 3.0)
+                    if (avg > best)
                     {
                   //      Console.WriteLine("making the assignments because we found something better");
                         best = avg;
@@ -152,28 +153,28 @@ namespace seniorProjFinal
             currency.Text = words.Last();
         }
 
-        private void PaintSURF(Bitmap img, List<IPoint> ipts)
-        {
-            Graphics g = Graphics.FromImage(img);
+        //private void PaintSURF(Bitmap img, List<IPoint> ipts)
+        //{
+        //    Graphics g = Graphics.FromImage(img);
 
-            Pen redPen = new Pen(Color.Red);
-            Pen bluePen = new Pen(Color.Blue);
-            Pen myPen;
+        //    Pen redPen = new Pen(Color.Red);
+        //    Pen bluePen = new Pen(Color.Blue);
+        //    Pen myPen;
 
-            foreach (IPoint ip in ipts)
-            {
-                int S = 2 * Convert.ToInt32(2.5f * ip.scale);
-                int R = Convert.ToInt32(S / 2f);
+        //    foreach (IPoint ip in ipts)
+        //    {
+        //        int S = 2 * Convert.ToInt32(2.5f * ip.scale);
+        //        int R = Convert.ToInt32(S / 2f);
 
-                Point pt = new Point(Convert.ToInt32(ip.x), Convert.ToInt32(ip.y));
-                Point ptR = new Point(Convert.ToInt32(R * Math.Cos(ip.orientation)), Convert.ToInt32(R * Math.Sin(ip.orientation)));
+        //        Point pt = new Point(Convert.ToInt32(ip.x), Convert.ToInt32(ip.y));
+        //        Point ptR = new Point(Convert.ToInt32(R * Math.Cos(ip.orientation)), Convert.ToInt32(R * Math.Sin(ip.orientation)));
 
-                myPen = (ip.laplacian > 0 ? bluePen : redPen);
+        //        myPen = (ip.laplacian > 0 ? bluePen : redPen);
 
-                g.DrawEllipse(myPen, pt.X - R, pt.Y - R, S, S);
-                g.DrawLine(new Pen(Color.FromArgb(0, 255, 0)), new Point(pt.X, pt.Y), new Point(pt.X + ptR.X, pt.Y + ptR.Y));
-            }
-        }
+        //        g.DrawEllipse(myPen, pt.X - R, pt.Y - R, S, S);
+        //        g.DrawLine(new Pen(Color.FromArgb(0, 255, 0)), new Point(pt.X, pt.Y), new Point(pt.X + ptR.X, pt.Y + ptR.Y));
+        //    }
+        //}
 
         private void btn2_Click(object sender, EventArgs e)
         {

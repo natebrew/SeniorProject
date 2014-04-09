@@ -60,7 +60,7 @@
             this.currency.Name = "currency";
             this.currency.Size = new System.Drawing.Size(438, 20);
             this.currency.TabIndex = 2;
-            this.currency.Text = "None";
+            this.currency.Text = "Waiting";
             // 
             // btn2
             // 
